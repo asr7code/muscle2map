@@ -370,8 +370,14 @@ if st.session_state.page == "Dashboard":
             st.markdown("---")
             for day in wp['weekly_schedule']:
                 with st.expander(f"**{day['day']}: {day['focus']}**"):
-                    for exercise in day['exercises']:
-                        st.markdown(f"- {exercise}")
+                    # --- THIS IS THE FIX ---
+                    # Check if the 'exercises' key exists before trying to loop
+                    if 'exercises' in day and day['exercises']:
+                        for exercise in day['exercises']:
+                            st.markdown(f"- {exercise}")
+                    else:
+                        # If no 'exercises' key, it's a Rest Day
+                        st.markdown("- *Rest Day*")
 
     # --- Weekly Check-in Form ---
     st.markdown("---")
@@ -451,4 +457,5 @@ if st.session_state.page == "Dashboard":
         # Create a line chart of the weight
         chart_df = history_df.rename(columns={"Weight (kg)": "Weight"}).set_index("Date")
         st.line_chart(chart_df, y="Weight")
+
 
